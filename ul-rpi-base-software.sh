@@ -281,6 +281,29 @@ function show_spigot_minecraft_usage() {
 	log "MC-Server neu starten:"
 	log "sudo systemctl restart minecraft"
 }
+function install_testssl() {
+	appDir=$optBaseDir/testssl
+	pathLink=/usr/local/bin/testssl.sh
+
+	if [ -d "$appDir" ]; then
+		log "Repo in $appDir bereits vorhanden, prüfe auf Aktualisierungen..."
+		wd=$(pwd)
+		cd $appDir
+		git pull
+		cd $wd
+	else
+		git clone --depth 1 https://github.com/drwetter/testssl.sh.git $appDir
+	fi
+
+	if [ ! -f "$pathLink" ]; then
+		log "Erzeuge Symbolische Verknüpfung $pathLink"
+		sudo ln -s $appDir/testssl.sh $pathLink
+	fi
+
+	version=$(grep 'declare -r VERSION=' $appDir/testssl.sh | awk -F'=' '{print substr($2, 2, length($2) - 2)}')
+	log "Installierte Version: $version"
+	log "Verwendung von testssl: testssl.sh <host>, z.B. testssl.sh u-labs.de"
+}
 
 sudo mkdir -p $optBaseDir
 sudo chown $USER $optBaseDir
@@ -309,8 +332,9 @@ options=(1 "Aliases" on
          5 "Eza" on
  	 6 "Ble.sh" on
  	 7 "Docker" off
-	 8 "Java (Bellsoft Paketquellen)" off
-	 9 "Minecraft Server (Spigot)" off
+	 8 "testssl.sh" on
+	 9 "Java (Bellsoft Paketquellen)" off
+	10 "Minecraft Server (Spigot)" off
 )
 choices=$("${cmd[@]}" "${options[@]}" 2>&1 >/dev/tty)
 
@@ -346,9 +370,12 @@ do
 	    install_docker
 	    ;;
 	8)
-	    install_belsoft_java_repos
+	    install_testssl
 	    ;;
 	9)
+	    install_belsoft_java_repos
+	    ;;
+	10)
             install_spigot_minecraft_server
             ;;
     esac
