@@ -3,11 +3,13 @@ set -eu
 optBaseDir=/opt/ul-install
 btopVersion=1.3.0
 
+boldFormat=$(tput bold)
+normalFormat=$(tput sgr0)
 function log() {
-	echo "[${FUNCNAME[1]}] $1"
+	echo "${boldFormat}[${FUNCNAME[1]}] ${normalFormat}$1"
 }
 function log_nl() {
-	echo "[${FUNCNAME[1]}] $1"
+	echo "${boldFormat}[${FUNCNAME[1]}] ${normalFormat}$1"
 	echo
 }
 function is_gui_os() {
