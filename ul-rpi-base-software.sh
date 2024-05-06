@@ -21,13 +21,11 @@ function common_aliases() {
 	file=~/.bash_aliases
 	if grep -L "alias dc" $file > /dev/null; then
 		log "Aliase bereits gesetzt"
-		cat $file
-		echo
-		return 
+	else
+		log "Lege allgemeine Aliase an"
+		echo "alias dc='docker compose'" >> $file
 	fi
 
-	log "Lege allgemeine Aliase an"
-	echo "alias dc='docker compose'" >> $file
 	cat $file
 	echo
 }
