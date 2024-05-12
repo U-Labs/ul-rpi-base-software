@@ -33,7 +33,7 @@ function common_aliases() {
 function install_apt_silent() {
 	package=$1
 	log "Installiere $package als Abhängigkeit..."
-        sudo apt-get install -y $package > /dev/null
+    sudo apt-get install -y $package > /dev/null
 }
 function install_if_command_missing() {
 	commandToTest=$1
@@ -219,17 +219,17 @@ function ask_supported_minecraft_version() {
 	echo $selectedVersion	
 }
 function install_spigot_minecraft_server() {
-        baseDir=$optBaseDir/spigot
+    baseDir=$optBaseDir/spigot
 	mcVersion=$(ask_supported_minecraft_version)
 	clear
 
 	install_belsoft_java_repos
-        install_apt_silent bellsoft-java17
+    install_apt_silent bellsoft-java17
 
-        mkdir -p $baseDir
-        cd $baseDir
+    mkdir -p $baseDir
+    cd $baseDir
 
-        wget -O BuildTools.jar https://hub.spigotmc.org/jenkins/job/BuildTools/lastSuccessfulBuild/artifact/target/BuildTools.jar
+    wget -O BuildTools.jar https://hub.spigotmc.org/jenkins/job/BuildTools/lastSuccessfulBuild/artifact/target/BuildTools.jar
 	if git config --global --get core.autocrlf; then
 		git config --global --unset core.autocrlf
 	fi
