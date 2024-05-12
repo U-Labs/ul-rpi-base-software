@@ -5,6 +5,7 @@ btopVersion=1.3.0
 
 boldFormat=$(tput bold)
 normalFormat=$(tput sgr0)
+arch=$(dpkg --print-architecture)
 function log() {
 	echo "${boldFormat}[${FUNCNAME[1]}] ${normalFormat}$1"
 }
@@ -55,9 +56,14 @@ function install_btop() {
 		return
 	fi
 
+	declare -A files
+	files[armhf]="btop-arm-linux-musleabi.tbz"
+	files[arm64]="btop-aarch64-linux-musl.tbz"
+	file=${files["$arch"]}
+
 	cd /tmp
-	wget https://github.com/aristocratos/btop/releases/download/v$btopVersion/btop-aarch64-linux-musl.tbz -O btop-aarch64.tbz
-	tar xjf btop-aarch64.tbz
+	wget https://github.com/aristocratos/btop/releases/download/v$btopVersion/$file -O btop.tbz
+	tar xjf btop.tbz
 	cd btop
 	bash install.sh
 }
@@ -305,6 +311,7 @@ function install_testssl() {
 	log "Verwendung von testssl: testssl.sh <host>, z.B. testssl.sh u-labs.de"
 }
 
+log "Architektur: $arch"
 sudo mkdir -p $optBaseDir
 sudo chown $USER $optBaseDir
 wd=$(pwd)
