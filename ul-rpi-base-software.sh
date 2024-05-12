@@ -188,6 +188,7 @@ function install_belsoft_java_repos() {
 	sudo mv bellsoft-liberica.gpg /usr/local/share/keyrings
 	rm key.gpg tmp.gpg tmp.gpg~
 
+	# ToDo: Mit globalem arch aus dpkg zusammenführen
 	arch=$(uname -m)
 	repoArch=armhf
 	if [ "$arch" == "aarch64" ]; then
