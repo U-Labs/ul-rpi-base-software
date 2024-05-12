@@ -325,15 +325,16 @@ title+="\n\n🔼🔽 Hoch/runter blättern, [Leertaste] aktivieren/deaktivieren,
 # --keep-tite fixt Anzeigefehler beim abbrechen
 # https://askubuntu.com/a/684192/650986
 cmd=(dialog --keep-tite --separate-output --checklist "$title" 23 76 16)
-options=(1 "Aliases" on
-         2 "Vim" on	
-         3 "Btop" on
-         4 "Fzf" on
-         5 "Eza" on
- 	 6 "Ble.sh" on
- 	 7 "Docker" off
-	 8 "testssl.sh" on
-	 9 "Java (Bellsoft Paketquellen)" off
+options=(
+	1 "Aliases" on
+    2 "Vim" on	
+	3 "Btop" on
+    4 "Fzf" on
+    5 "Eza" on
+	6 "Ble.sh" on
+ 	7 "Docker" off
+	8 "testssl.sh" on
+	9 "Java (Bellsoft Paketquellen)" off
 	10 "Minecraft Server (Spigot)" off
 )
 choices=$("${cmd[@]}" "${options[@]}" 2>&1 >/dev/tty)
@@ -348,24 +349,24 @@ install_general_requirements
 for choice in $choices
 do
     case $choice in
-        1)
+    1)
 	    common_aliases
-            ;;
+        ;;
 	2)
 	    install_if_command_missing vim vim
 	    ;;
-        3)
-            install_btop
-            ;;
-        4)
-            install_fzf
-            ;;
-        5)
-            install_eza
-            ;;
-        6)
-            install_ble_sh
-            ;;
+    3)
+        install_btop
+        ;;
+    4)
+        install_fzf
+    	;;
+    5)
+        install_eza
+        ;;
+    6)
+        install_ble_sh
+        ;;
 	7)
 	    install_docker
 	    ;;
@@ -376,8 +377,8 @@ do
 	    install_belsoft_java_repos
 	    ;;
 	10)
-            install_spigot_minecraft_server
-            ;;
+        install_spigot_minecraft_server
+        ;;
     esac
 done
 
