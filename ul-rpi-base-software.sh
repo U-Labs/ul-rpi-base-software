@@ -363,7 +363,8 @@ fi
 title+="\n\n🔼🔽 Hoch/runter blättern, [Leertaste] aktivieren/deaktivieren, [Tab] wechselt nach unten, [Enter] startet.\n\nWähle aus, welche Komponenten du installieren möchtest:"
 # --keep-tite fixt Anzeigefehler beim abbrechen
 # https://askubuntu.com/a/684192/650986
-cmd=(dialog --keep-tite --separate-output --checklist "$title" 23 76 16)
+# Dimensionen: Höhe, Breite
+cmd=(dialog --keep-tite --separate-output --checklist "$title" 25 76 116)
 options=(
 	1 "Aliases" on
     2 "Vim" on	
