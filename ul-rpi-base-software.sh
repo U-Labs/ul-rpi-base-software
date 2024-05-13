@@ -1,7 +1,9 @@
 #!/bin/bash
 set -eu
 optBaseDir=/opt/ul-install
+manualBinDir=/usr/local/bin
 btopVersion=1.3.0
+gituiVersion=0.26.1
 
 boldFormat=$(tput bold)
 normalFormat=$(tput sgr0)
@@ -290,7 +292,7 @@ function show_spigot_minecraft_usage() {
 }
 function install_testssl() {
 	appDir=$optBaseDir/testssl
-	pathLink=/usr/local/bin/testssl.sh
+	pathLink=$manualBinDir/testssl.sh
 
 	if [ -d "$appDir" ]; then
 		log "Repo in $appDir bereits vorhanden, prüfe auf Aktualisierungen..."
@@ -310,6 +312,31 @@ function install_testssl() {
 	version=$(grep 'declare -r VERSION=' $appDir/testssl.sh | awk -F'=' '{print substr($2, 2, length($2) - 2)}')
 	log "Installierte Version: $version"
 	log "Verwendung von testssl: testssl.sh <host>, z.B. testssl.sh u-labs.de"
+}
+function install_gitui(){
+	targetPath=$manualBinDir/gitui
+	if [ -f "$targetPath" ]; then
+		log "GitUI ist bereits in $targetPath installiert:"
+		gitui --version
+
+		version=$(gitui --version | awk '{print $2}')
+		if [ "$version" = "$gituiVersion" ]; then
+			log "Installierte Version ist aktuell."
+			return
+		else
+			log "Es ist eine neuere Version $gituiVersion verfügbar, aktualisiere..."
+		fi
+	fi
+
+	declare -A files
+	files[armhf]="gitui-linux-arm.tar.gz"
+	files[arm64]="gitui-linux-aarch64.tar.gz"
+	file=${files["$arch"]}
+
+	cd /tmp
+	wget https://github.com/extrawurst/gitui/releases/download/v$gituiVersion/$file -O gitui.tar.gz
+	tar xfz gitui.tar.gz
+	sudo mv gitui $targetPath
 }
 
 log "Architektur: $arch"
@@ -342,8 +369,9 @@ options=(
 	6 "Ble.sh" on
  	7 "Docker" off
 	8 "testssl.sh" on
-	9 "Java (Bellsoft Paketquellen)" off
-	10 "Minecraft Server (Spigot)" off
+	9 "GitUI" on
+	10 "Java (Bellsoft Paketquellen)" off
+	11 "Minecraft Server (Spigot)" off
 )
 choices=$("${cmd[@]}" "${options[@]}" 2>&1 >/dev/tty)
 
@@ -382,9 +410,11 @@ do
 	    install_testssl
 	    ;;
 	9)
+		install_gitui;;
+	10)
 	    install_belsoft_java_repos
 	    ;;
-	10)
+	11)
         install_spigot_minecraft_server
         ;;
     esac
