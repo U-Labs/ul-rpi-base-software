@@ -1,4 +1,4 @@
-# U-Labs Raspberry Pi Basis-Software
+# <img src="https://u-img.net/img/5176Ur.png" style="vertical-align: middle" /> U-Labs Raspberry Pi Basis-Software
 Installiert nützliche GNU/Linux-Werkzeuge, die ich auf [U-Labs](https://u-labs.de/portal/) vorgestellt habe, mit wenigen Handgriffen auf dem Raspberry Pi.
 
 ## Verwendung
