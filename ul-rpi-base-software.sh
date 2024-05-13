@@ -5,11 +5,15 @@ manualBinDir=/usr/local/bin
 btopVersion=1.3.0
 gituiVersion=0.26.1
 
+# https://linuxcommand.org/lc3_adv_tput.php
 boldFormat=$(tput bold)
 normalFormat=$(tput sgr0)
+logFg=$(tput setaf 0)
+logBg=$(tput setab 7)
 arch=$(dpkg --print-architecture)
+
 function log() {
-	echo "${boldFormat}[${FUNCNAME[1]}] ${normalFormat}$1"
+	echo "${logFg}${logBg}${boldFormat}[${FUNCNAME[1]}]${normalFormat} $1"
 }
 function log_nl() {
 	echo "${boldFormat}[${FUNCNAME[1]}] ${normalFormat}$1"
