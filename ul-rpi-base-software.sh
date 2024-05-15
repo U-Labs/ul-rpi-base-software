@@ -342,7 +342,16 @@ function install_gitui(){
 	tar xfz gitui.tar.gz
 	sudo mv gitui $targetPath
 }
-
+function install_flatpak() {
+	if ! command -v flatpak --version > /dev/null; then
+		log "Installiere Flatpak"
+		sudo apt-get install -y flatpak
+		sudo flatpak remote-add --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo
+	else
+		log "Flatpak bereits installiert:"
+		flatpak --version
+	fi
+}
 log "Architektur: $arch"
 sudo mkdir -p $optBaseDir
 sudo chown $USER $optBaseDir
@@ -375,8 +384,9 @@ options=(
  	7 "Docker" off
 	8 "testssl.sh" on
 	9 "GitUI" on
-	10 "Java (Bellsoft Paketquellen)" off
-	11 "Minecraft Server (Spigot)" off
+	10 Flatpak off
+	11 "Java (Bellsoft Paketquellen)" off
+	12 "Minecraft Server (Spigot)" off
 )
 choices=$("${cmd[@]}" "${options[@]}" 2>&1 >/dev/tty)
 
@@ -416,10 +426,12 @@ do
 	    ;;
 	9)
 		install_gitui;;
-	10)
+	10) 
+		install_flatpak ;;
+	11)
 	    install_belsoft_java_repos
 	    ;;
-	11)
+	12)
         install_spigot_minecraft_server
         ;;
     esac
