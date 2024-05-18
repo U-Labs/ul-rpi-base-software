@@ -385,8 +385,9 @@ options=(
 	8 "testssl.sh" on
 	9 "GitUI" on
 	10 Flatpak off
-	11 "Java (Bellsoft Paketquellen)" off
-	12 "Minecraft Server (Spigot)" off
+	11 "VNC FHD" off
+	12 "Java (Bellsoft Paketquellen)" off
+	13 "Minecraft Server (Spigot)" off
 )
 choices=$("${cmd[@]}" "${options[@]}" 2>&1 >/dev/tty)
 
@@ -429,9 +430,17 @@ do
 	10) 
 		install_flatpak ;;
 	11)
+		# Workaround X11 (W1) statt Wayland (W2)
+		# https://www.raspberrypi.com/documentation/computers/configuration.html#wayland-2
+		# https://raspberrypi.stackexchange.com/a/142681/73079
+		sudo raspi-config nonint do_wayland W1
+		sudo raspi-config nonint do_vnc 1
+		sudo raspi-config nonint do_vnc_resolution 1920x1080
+		;;
+	12)
 	    install_belsoft_java_repos
 	    ;;
-	12)
+	13)
         install_spigot_minecraft_server
         ;;
     esac
