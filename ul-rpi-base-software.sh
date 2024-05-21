@@ -212,16 +212,20 @@ function ask_supported_minecraft_version() {
 	versions=$(curl -s https://hub.spigotmc.org/versions/ | grep -E -o 'href="[^"]+"' | grep -E -o "[0-9]+\.[0-9]+(\.[0-9]+)?(\-[a-z]+[0-9]+)?" | sort -V -r)
 	declare -a versionOptions
 	for version in $(echo $versions); do
-		versionOptions+=( "$version" "Minecraft $version" )
+		versionOptions+=( "$version" "Minecraft $version" off )
 	done
 
 	height=40
 	width=80
-	choiceHeight=8
+	choiceHeight=35
 	backtitle="U-Labs Tool: Minecraft-Server mit Spigot"
 	title="Minecraft Versionsauswahl zur Installation"
 	menu="Bitte wähle die Minecraft-Version zur Installation. Dein Client muss die gleiche Version nutzen, um sich verbinden zu können!"
-	selectedVersion=$(dialog --keep-tite --backtitle "$backtitle" --title "$title" --menu "$menu" $height $width $choiceHeight "${versionOptions[@]}" 2>&1 >/dev/tty)
+	selectedVersion=$(whiptail --separate-output --title "$backtitle" --radiolist "$title" $height $width $choiceHeight "${versionOptions[@]}" 3>&1 1>&2 2>&3)
+	if [ -z "$selectedVersion" ]; then
+		whiptail --msgbox "Bitte die zu installieren Minecraft-Version für deinen Server auswählen!\nSie muss mit der Version deines Clients identisch sein." 10 100
+		ask_supported_minecraft_version
+	fi
 	echo $selectedVersion	
 }
 function install_spigot_minecraft_server() {
@@ -356,11 +360,6 @@ log "Architektur: $arch"
 sudo mkdir -p $optBaseDir
 sudo chown $USER $optBaseDir
 wd=$(pwd)
-# Alternative: "whiptail", unterstützt mehr Arten von Dialogen
-# https://www.dev-insider.de/dialogboxen-mit-whiptail-erstellen-a-860990/
-if ! command -v dialog > /dev/null; then
-	install_apt_silent dialog
-fi
 
 model=$(dmesg | grep 'Machine model' | awk -F': ' '{print $2}')
 title="🧪U-Labs Raspberry Pi Basis-Werkzeuge\n🍓$model "
@@ -370,26 +369,25 @@ else
 	title+="⌨️"
 fi
 title+="\n\n🔼🔽 Hoch/runter blättern, [Leertaste] aktivieren/deaktivieren, [Tab] wechselt nach unten, [Enter] startet.\n\nWähle aus, welche Komponenten du installieren möchtest:"
-# --keep-tite fixt Anzeigefehler beim abbrechen
-# https://askubuntu.com/a/684192/650986
-# Dimensionen: Höhe, Breite
-cmd=(dialog --keep-tite --separate-output --checklist "$title" 25 76 116)
+
 options=(
-	1 "Aliases" on
-    2 "Vim" on	
-	3 "Btop" on
-    4 "Fzf" on
-    5 "Eza" on
-	6 "Ble.sh" on
- 	7 "Docker" off
-	8 "testssl.sh" on
-	9 "GitUI" on
-	10 Flatpak off
-	11 "VNC FHD" off
-	12 "Java (Bellsoft Paketquellen)" off
-	13 "Minecraft Server (Spigot)" off
+	"1" "Aliases" on
+    "2" "Vim" on	
+	"3" "Btop" on
+    "4" "Fzf" on
+    "5" "Eza" on
+	"6" "Ble.sh" on
+ 	"7" "Docker" off
+	"8" "testssl.sh" on
+	"9" "GitUI" on
+	"10" Flatpak off
+	"11" "VNC FHD" off
+	"12" "Java (Bellsoft Paketquellen)" off
+	"13" "Minecraft Server (Spigot)" off
 )
-choices=$("${cmd[@]}" "${options[@]}" 2>&1 >/dev/tty)
+# Höhe, Breite, innere Höhe der Auswahlliste
+# 2>&1 >/dev/tty
+choices=$(whiptail --separate-output --title "Hauptmenü" --checklist "$title" 28 70 15 "${options[@]}" 3>&1 1>&2 2>&3)
 
 # Deckt den Abbruch ab. In diesem Fall sollen die allgemeinen Abhängigkeiten nicht installiert werden.
 if [ -z "$choices" ]; then
@@ -398,8 +396,7 @@ if [ -z "$choices" ]; then
 fi
 
 install_general_requirements
-for choice in $choices
-do
+for choice in $choices; do
     case $choice in
     1)
 	    common_aliases
