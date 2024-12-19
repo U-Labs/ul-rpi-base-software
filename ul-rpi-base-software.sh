@@ -362,7 +362,7 @@ sudo chown $USER $optBaseDir
 wd=$(pwd)
 
 model=$(dmesg | grep 'Machine model' | awk -F': ' '{print $2}')
-title="🧪U-Labs Raspberry Pi Basis-Werkzeuge\n🍓$model "
+title="U-Labs Raspberry Pi Basis-Werkzeuge\n🍓$model "
 if is_gui_os; then
 	title+="🖥️"
 else
