@@ -3,7 +3,7 @@ set -eu
 optBaseDir=/opt/ul-install
 manualBinDir=/usr/local/bin
 btopVersion=1.4.0
-gituiVersion=0.26.1
+gituiVersion=0.26.3
 
 # https://linuxcommand.org/lc3_adv_tput.php
 boldFormat=$(tput bold)
