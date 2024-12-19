@@ -2,7 +2,7 @@
 set -eu
 optBaseDir=/opt/ul-install
 manualBinDir=/usr/local/bin
-btopVersion=1.3.0
+btopVersion=1.4.0
 gituiVersion=0.26.1
 
 # https://linuxcommand.org/lc3_adv_tput.php
