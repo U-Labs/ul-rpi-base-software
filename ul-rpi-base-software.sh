@@ -2,7 +2,7 @@
 set -eu
 optBaseDir=/opt/ul-install
 manualBinDir=/usr/local/bin
-btopVersion=1.4.0
+btopVersion=1.4.3
 gituiVersion=0.27.0
 
 # https://linuxcommand.org/lc3_adv_tput.php
@@ -56,10 +56,16 @@ function install_general_requirements() {
 
 function install_btop() {
 	if command -v btop > /dev/null; then
-		log "Btop bereits installiert"
+		# Formatierungen (Fett) muessen entfernt werden, sonst schlaegt der Vergeich fehl
+		installedVersion=$(btop --version | head -1 | awk -F': ' '{print $2}' | sed -r "s/\x1B\[([0-9]{1,3}(;[0-9]{1,2};?)?)?[mGK]//g")
+		log "Btop ist bereits installiert: $installedVersion"
 		btop --version
 		echo
-		return
+
+		if [ "$installedVersion" = "$btopVersion" ]; then
+			log "Installierte Version $installedVersion entspricht der aktuellsten $btopVersion, breche ab"
+			return
+		fi
 	fi
 
 	declare -A files
